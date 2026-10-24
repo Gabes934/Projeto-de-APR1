@@ -1,6 +1,14 @@
 # -------
 # MENUS
 # -------
+def exibir_menu_principal():
+    print("\n===== CONCESSIONÁRIA - TESTE DRIVE =====")
+    print("1 - Submenu de Cliente")
+    print("2 - Submenu de Veículo")
+    print("3 - Submenu de TesteDrive")
+    print("4 - Submenu Relatórios")
+    print("5 - Sair")
+    print("------------------------------")
 
 def exibir_submenu(titulo):
     print("\n===== SUBMENU DE " + titulo + " =====")
@@ -23,7 +31,23 @@ def exibir_menu_relatorios():
 # --------
 # CLIENTE
 # --------
+def coletar_dados_cliente(clientes):
+    cpf = input("CPF: ")
 
+    for cliente in clientes:
+        if cliente[0] == cpf:
+            print("Já existe um cliente cadastrado com esse CPF!")
+            return None
+
+    nome = input("Nome: ")
+    data_nascimento = input("Data de nascimento (dd/mm/aaaa): ")
+    sexo = input("Sexo (M/F): ")
+    telefone_fixo = input("Telefone fixo: ")
+    celular = input("Celular: ")
+    email = input("E-mail: ")
+
+    novo_cliente = [cpf, nome, data_nascimento, sexo, telefone_fixo, celular, email]
+    return novo_cliente
 # --------
 # VEÍCULO
 # --------

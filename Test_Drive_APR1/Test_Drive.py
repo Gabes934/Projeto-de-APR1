@@ -49,7 +49,7 @@ def exibir_menu_relatorios():
  ------------------------------------------------------------------------
 '''
 
-def coletar_dados_cliente(clientes):
+def incluir_cliente(clientes):
     # Inclui um novo cliente (sem repetição de CPF)
     
     cpf = input("CPF: ")
@@ -111,7 +111,7 @@ def lista_um_cliente(clientes):
 
 
 
-def alterar_clientes(clientes):
+def alterar_cliente(clientes):
     # Altera os dados de um cliente existente.
     # O CPF é a chave e por isso NÃO pode ser alterado.
 
@@ -134,18 +134,42 @@ def alterar_clientes(clientes):
     print('Cliente alterado com sucesso!')
 
 
+def cliente_possui_teste(cpf, testes):
+    # Verifica se um cliente possui algum teste drive cadastrado.
+    # Retorna True se houver pelo menos um teste drive, False caso contrário.
 
-def excluir_clientes(clientes):
-    # Exclui um cliente pelo CPF.
+    for cpf_teste, codigo_veiculo, data in testes:
+        if cpf_teste == cpf:
+            return True
+    return False
+
+def excluir_cliente(clientes, testes):
+    # Exclui um cliente pelo CPF, após mostrar seus dados e pedir confirmação.
 
     cpf = input('CPF do cliente que deseja excluir: ')
 
+    # 1. Verificar existência do cliente
     if cpf not in clientes:
         print('Cliente não encontrado!')
         return
-    
-    del clientes[cpf]  # remove a chave e os dados associados a ela
-    print('Cliente excluido com sucesso')
+
+    # 2. Bloquear a exclusão de quem já tem teste drive registrado
+    if cliente_possui_teste(cpf, testes):
+        print("Não é possível excluir: o cliente possui teste drive cadastrado.")
+        return
+
+    # 3. Mostra os dados para o usuário conferir antes de apagar
+    print("\nDados do cliente a ser excluído:")
+    exibir_cliente(cpf, clientes[cpf])
+
+    # 4. Confirmação: upper() aceita tanto 's' quanto 'S'
+    confirmacao = input("Confirma a exclusão? (S/N): ").strip().upper()
+
+    if confirmacao == "S":
+        del clientes[cpf]  # remove a chave e os dados associados a ela
+        print('Cliente excluido com sucesso')
+    else:
+        print("Exclusão cancelada.") # Qualquer resposta diferente de S cancela a exclusão.
 
 
 
@@ -161,11 +185,11 @@ def submenu_clientes(clientes, testes):
         elif opcao == '2':
             lista_um_cliente(clientes)
         elif opcao == '3':
-            coletar_dados_cliente(clientes)
+            incluir_cliente(clientes)
         elif opcao == '4':
-            alterar_clientes(clientes)
+            alterar_cliente(clientes)
         elif opcao == '5':
-            excluir_clientes(clientes)
+            excluir_cliente(clientes, testes)
         elif opcao == '0':
             print('Voltando ao menu principal...')
         else:
@@ -238,5 +262,5 @@ def main():
             print('Opção inválida!')
 
 
-            
+
 main()

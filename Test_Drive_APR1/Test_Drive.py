@@ -1,16 +1,26 @@
-# -------
-# MENUS
-# -------
+""" Gerenciamento de Testes Drive - Concessionária de Veículos """
+
+''' 
+ ---------------------------------------------------------------------
+ MENUS (Funções que apenas exibem as opções na tela 'não têm lógica')
+ ---------------------------------------------------------------------
+ '''
 def exibir_menu_principal():
+    # Mostra as opções do menu principal.
     print("\n===== CONCESSIONÁRIA - TESTE DRIVE =====")
-    print("1 - Submenu de Cliente")
-    print("2 - Submenu de Veículo")
-    print("3 - Submenu de TesteDrive")
-    print("4 - Submenu Relatórios")
+    print("1 - Clientes")
+    print("2 - Veículos")
+    print("3 - TesteDrives")
+    print("4 - Relatórios")
     print("5 - Sair")
     print("------------------------------")
 
+
 def exibir_submenu(titulo):
+    # Mostra as opções do submenu.
+    # Parâmetro: titulo: nome da entidade que aparece no cabeçalho (ex.: 'CLIENTE')
+    # O mesmo submenu serve para Cliente, Veículo e TesteDrive
+
     print("\n===== SUBMENU DE " + titulo + " =====")
     print("1 - Listar todos")
     print("2 - Listar um")
@@ -20,7 +30,9 @@ def exibir_submenu(titulo):
     print("0 - Voltar")
     print("------------------------------")
 
+
 def exibir_menu_relatorios():
+    # Mostra as opções de relatórios (a, b e c do enunciado).
     print("\n===== RELATÓRIOS =====")
     print("1 - Avaliações de um veículo")
     print("2 - Clientes que testaram um veículo em uma data")
@@ -28,16 +40,21 @@ def exibir_menu_relatorios():
     print("0 - Voltar")
     print("------------------------------")
 
-# --------
-# CLIENTE
-# --------
-#clientes: chave = CPF(texto)
-#valor = [nome, data_nascimento, sexo, telefone_fixo, celular, email]
-#posição:  0         1             2      3              4       5
+'''
+ ------------------------------------------------------------------------
+ CLIENTE
+   chave = CPF (texto)
+   valor = [nome, data_nascimento, sexo, telefone_fixo, celular, email]
+   posição:  0          1           2          3          4       5
+ ------------------------------------------------------------------------
+'''
+
 def coletar_dados_cliente(clientes):
+    # Inclui um novo cliente (sem repetição de CPF)
+    
     cpf = input("CPF: ")
 
-    # se p CPF ja é uma chave do dicionário, não deixa cadastrar de novo
+    # Validação da chave: se o CPF já existe no dicionário, não cadastra de novo
     if cpf in clientes:
         print("Já existe um cliente cadastrado com esse CPF!")
         return
@@ -49,12 +66,14 @@ def coletar_dados_cliente(clientes):
     celular = input("Celular: ")
     email = input("E-mail: ")
 
-    #guarda no dicionario: CPF é a chave, o resto vai numa lista
+    # Guarda no dicionário: o CPF é a chave e os demais dados vão em uma lista
     clientes[cpf] = [nome, data_nascimento, sexo, telefone_fixo, celular, email]
     print('Cliente cadastrado com sucesso!')
 
+
+
 def exibir_cliente(cpf, dados):
-    # recebe o cpf(chave) e a lista de dados e mostra tudo formatado
+    # Mostra na tela os dados de um cliente de forma organizada
     print('CPF:',cpf)
     print('Nome:', dados[0])
     print('Data de nascimento:', dados[1])
@@ -62,57 +81,80 @@ def exibir_cliente(cpf, dados):
     print('Telefone_fixo:', dados[3])
     print('Celular:', dados[4])
     print('E-mail:', dados[5])
-    print('-'*32)
+    print('-'*32) # linha separadora entre um cliente e outro
+
+
 
 def lista_todos_clientes(clientes):
-    if len(clientes) == 0:          #dicionario vazio
+    #Lista todos os clientes cadastrados
+
+    if len(clientes) == 0: #dicionario vazio
         print('Nenhum cliente cadastrado.')
         return
-
-    for cpf in clientes:         # o for percorre as chaves (CPFs)
+    
+    # O for sobre um dicionário percorre as chaves (os CPFs)
+    for cpf in clientes:
         exibir_cliente(cpf, clientes[cpf])
 
+
+
 def lista_um_cliente(clientes):
+    # Busca um cliente pelo CPF e mostra seus dados
     cpf = input('CPF do cliente: ')
 
+    # Se a chave não existe, não há o que mostrar
     if cpf not in clientes:
         print('Cliente não encontrado!')
         return
 
     exibir_cliente(cpf, clientes[cpf])
 
+
+
 def alterar_clientes(clientes):
+    # Altera os dados de um cliente existente.
+    # O CPF é a chave e por isso NÃO pode ser alterado.
+
     cpf = input('CPF do cliente que deseja alterar: ')
 
     if cpf not in clientes:
         print('Cliente não encontrado.')
         return
-    #o cpf é a chave e nao muda; pede só os outros dados
+    
+    # Pede apenas os dados que podem mudar (tudo, menos o CPF)
     nome = input('Novo nome: ')
-    data_nascimento = input('Nova data de nascimento')
-    sexo = input('Novo sexo (M/F)')
+    data_nascimento = input('Nova data de nascimento: ')
+    sexo = input('Novo sexo (M/F): ')
     telefone_fixo = input('Novo telefone fixo: ')
     celular = input('Novo celular: ')
     email = input('Novo e-mail: ')
-    #atribuuir na mesma chave substitui o valor antigo
+
+    # Atribuir à mesma chave substitui a lista antiga pela nova
     clientes[cpf] = [nome, data_nascimento, sexo, telefone_fixo, celular, email]
     print('Cliente alterado com sucesso!')
 
+
+
 def excluir_clientes(clientes):
-    cpf = input('CPF do mcliente que deseja excluir: ')
+    # Exclui um cliente pelo CPF.
+
+    cpf = input('CPF do cliente que deseja excluir: ')
 
     if cpf not in clientes:
         print('Cliente não encontrado!')
         return
-    del clientes[cpf]       #remove a chave e os dados dela
+    
+    del clientes[cpf]  # remove a chave e os dados associados a ela
     print('Cliente excluido com sucesso')
 
 
+
 def submenu_clientes(clientes, testes):
+    # Controla o submenu de clientes (loop até o usuário digitar 0)
     opcao = ''
     while opcao != '0':
         exibir_submenu('CLIENTE')
-        opcao = input('Escolha uma opção: ').strip()
+        opcao = input('Escolha uma opção: ').strip() # strip() tira espaços extras
 
         if opcao == '1':
             lista_todos_clientes(clientes)
@@ -125,30 +167,54 @@ def submenu_clientes(clientes, testes):
         elif opcao == '5':
             excluir_clientes(clientes)
         elif opcao == '0':
-            print('Voltano ao menu principal...')
+            print('Voltando ao menu principal...')
         else:
             print('Opção inválida!')
         
 
-# --------
-# VEÍCULO
-# --------
+'''
+ ---------------------------------------------
+ VEÍCULO
+    chave = código do veículo
+    valor = [descricao, ano, modelo, valor]
+ ---------------------------------------------
+'''
+
 def submenu_veiculo(veiculos, testes):
-    print('Em construçãp')
-# ------------
-# TESTE DRIVE
-# ------------
+    print('Em construção...')
+
+
+
+'''
+ ---------------------------------------------
+ TESTE DRIVE
+    chave = tupla (cpf, codigo_veiculo, data)
+    valor = avaliação do cliente
+ ---------------------------------------------
+'''
+
 def submenu_teste(testes, clientes, veículos):
-    print('construçao')
-# -----------
-# RELATÓRIOS
-# -----------
+    print('Em construção...')
+
+
+
+'''
+ --------------
+ RELATÓRIOS
+ --------------
+'''
+
 def submenu_relatorios(testes, clientes, veiculos):
-    print('contrulçao')
+    print('Em construção...')
+
+
+
 # --------------------
 # PROGRAMA PRINCIPAL
 # --------------------
 def main():
+    # Cria as estruturas de dados e controla o menu principal.
+
     clientes = {}
     veiculos = {}
     testes = {}
@@ -156,7 +222,8 @@ def main():
     opcao = ""
     while opcao != "5":
         exibir_menu_principal()
-        opcao = input("Escolha uma opção: ").strip() #remove os espaços em branco do começo e do fim do texto
+        opcao = input("Escolha uma opção: ").strip()  # strip() remove os espaços em branco do começo e do fim do texto
+
         if opcao == "1":
             submenu_clientes(clientes, testes)
         elif opcao == "2":
@@ -169,5 +236,7 @@ def main():
             print('Encerrando o programa...')
         else:
             print('Opção inválida!')
-main()
 
+
+            
+main()

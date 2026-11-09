@@ -40,6 +40,147 @@ def exibir_menu_relatorios():
     print("0 - Voltar")
     print("------------------------------")
 
+''' 
+ ---------------------------------------------------------------------
+ VALIDAÇÔES
+ ---------------------------------------------------------------------
+ '''
+
+def verificar_texto(mensagem):
+    #Verifica se o input do usuario ficou vazio ou contem ';' (separador do arquivo)
+
+    while True:
+        texto = input(mensagem).strip()   # strip() tira espaços das pontas
+        if texto == "":
+            print("Este campo não pode ficar vazio.")
+        elif ";" in texto:
+            # ';' vai ser o separador dos campos no arquivo texto;
+            # se aparecesse dentro de um nome, quebraria a leitura depois
+            print("O caractere ';' não é permitido.")
+        else:
+            return texto
+
+
+
+def verificar_cpf(mensagem="CPF: "):
+    #Verifica o CPF com 11 números. Aceita pontos e traço, mas devolve só os dígitos
+    while True:
+        cpf = input(mensagem).strip().replace(".", "").replace("-", "")
+        # strip() tira espaços das pontas
+        # .replace(".", "") substitui os pontos por um texto vazio
+        # .replace("-", "") substitui os traços por um texto vazio
+
+        if cpf == "":
+            print("O CPF não pode ficar vazio.")
+        elif not cpf.isdigit() or len(cpf) != 11: # .isdigit() verifica se todos os caracteres são números
+            print("CPF inválido: informe exatamente 11 números.")
+        else:
+            return cpf   # sempre guardado no mesmo formato
+
+
+
+def verificar_sexo(mensagem="Sexo (M/F): "):
+    #verifica o sexo e aceita apenas M ou F (maiúscula ou minúscula)
+
+    while True:
+        sexo = input(mensagem).strip().upper()   # upper() aceita 'm' e 'f'
+        if sexo in ("M", "F"):
+            return sexo
+        print("Sexo inválido: digite M ou F.")
+
+
+
+def verificar_telefone(mensagem, quantidade_digitos):
+    # verifica se ê um telefone só com números (DDD + número)
+    # Parâmetros:
+    # quantidade_digitos: 10 para fixo (DDD + 8) ou 11 para celular (DDD + 9)
+   
+    while True:
+        telefone = input(mensagem).strip()
+
+        # remove os caracteres () e -
+        for caractere in "()- ":
+            telefone = telefone.replace(caractere, "") # .replace( ) substitui os caracteres por um texto vazio
+
+        if telefone.isdigit() and len(telefone) == quantidade_digitos: # .isdigit() verifica se todos os caracteres são números
+            return telefone
+        print("Telefone inválido: informe DDD + número com", quantidade_digitos, "dígitos.")
+
+
+
+def email_valido(email):
+    # Confere se um e-mail é válido
+    # Regras:
+    #    1. Tem exatamente um '@', sem espaços nem ';' no texto
+    #    2. Há texto antes do '@' (o nome do usuário)
+    #    3. Há um domínio entre o '@' e o final (qualquer um, ex.: gmail)
+    #    4. O e-mail termina com '.com'
+
+    quantidade_arrobas = 0
+    posicao_arroba = -1    # -1 significa "ainda não encontrei o @"
+
+    # 1: percorre a string procurando o '@' e caracteres proibidos
+    for posicao in range(len(email)):
+        caractere = email[posicao]
+
+        if caractere == "@":
+            quantidade_arrobas = quantidade_arrobas + 1
+            posicao_arroba = posicao     # guarda onde o '@' está
+
+        # espaço quebraria o e-mail e ';' é o separador do arquivo texto
+        if caractere == " " or caractere == ";":
+            return False
+
+    # precisa existir exatamente um '@'
+    if quantidade_arrobas != 1:
+        return False
+
+    # 2: precisa haver texto antes do '@'
+    if posicao_arroba == 0:
+        return False
+
+    # 3: o e-mail precisa terminar com '.com'
+    # email[-4:] pega os 4 últimos caracteres da string
+    if len(email) < 4 or email[-4:] != ".com":
+        return False
+
+    # 4: precisa existir um domínio entre o '@' e o '.com'
+    posicao_inicio_com = len(email) - 4
+    if posicao_arroba + 1 >= posicao_inicio_com: #posicao_arroba + 1: Representa a posição da primeira letra imediatamente depois da arroba
+        return False
+
+    return True
+
+
+
+def verificar_email(mensagem="E-mail: "):
+    #Valida o e-mail
+    while True:
+        email = input(mensagem).strip() # strip() tira espaços das pontas
+        if email_valido(email):
+            return email
+        print("E-mail inválido (exemplo: nome@dominio.com).")
+
+
+
+def verificar_ano(mensagem):
+    # Verifica o ano de fabricação/nascimento (entre 1900 e o ano que vem)
+    import datetime # aplica informações de data e tempo
+    ano_maximo = datetime.now().year + 1   # carros do próximo ano já são vendidos
+    while True:
+        texto = input(mensagem).strip() # strip() tira espaços das pontas
+
+        # isdigit() é True só se TODOS os caracteres forem dígitos
+        # Isso já recusa vazio, letras, negativos e decimais
+        # então o int() abaixo nunca recebe um texto que cause erro.
+        if not texto.isdigit():
+            print("Digite apenas números (ex.: 2022).")
+        elif int(texto) < 1900 or int(texto) > ano_maximo:
+            print("Ano deve estar entre 1900 e", ano_maximo)
+        else:
+            return int(texto)   # o ano é válido
+
+
 '''
  ------------------------------------------------------------------------
  CLIENTE

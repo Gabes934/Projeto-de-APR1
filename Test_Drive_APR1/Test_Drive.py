@@ -165,8 +165,8 @@ def verificar_email(mensagem="E-mail: "):
 
 def verificar_ano(mensagem):
     # Verifica o ano de fabricação/nascimento (entre 1900 e o ano que vem)
-    import datetime # aplica informações de data e tempo
-    ano_maximo = datetime.now().year + 1   # carros do próximo ano já são vendidos
+    from datetime import date # aplica informações de data
+    ano_maximo = date.today().year + 1   # carros do próximo ano já são vendidos
     while True:
         texto = input(mensagem).strip() # strip() tira espaços das pontas
 

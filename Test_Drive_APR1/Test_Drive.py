@@ -181,6 +181,43 @@ def verificar_ano(mensagem):
             return int(texto)   # o ano é válido
 
 
+
+def verificar_data(mensagem, permitir_futura=True):
+    # Verifica se data está no formato dd/mm/aaaa e confere se ela existe no calendário.
+    
+    from datetime import datetime # aplica informações de data
+    while True:
+        texto = input(mensagem).strip()  # Data do usuario (ex.: 25/12/2025). strip() tira espaços das pontas
+        try: # try = tenta executar o código; se der erro, vai para o except
+            # strptime converte texto em data; levanta ValueError se o formato
+            # estiver errado OU se a data não existir (ex.: 31/02/2025)
+            data = datetime.strptime(texto, "%d/%m/%Y")
+        except ValueError:
+            print("Data inválida. Use dd/mm/aaaa com uma data real (ex.: 25/12/2025).")
+            continue
+
+        if not permitir_futura and data > datetime.now():
+            print("A data não pode ser futura.")
+            continue
+
+        # strftime padroniza: "1/2/2025" vira "01/02/2025"
+        return data.strftime("%d/%m/%Y")
+
+
+
+def verificar_valor(mensagem):
+    """Verifica se o valor em reais é maior que zero. Aceita vírgula (ex.: 45000,90)."""
+    while True:
+        try:
+            valor = float(input(mensagem).replace(",", ".")) # substitui vírgula por ponto para float()
+        except ValueError: # se o usuário digitar algo que não seja número, cai aqui
+            print("Digite um número válido.") 
+            continue # volta para o início do while
+        if valor > 0:
+            return valor
+        print("O valor deve ser maior que zero.")
+
+
 '''
  ------------------------------------------------------------------------
  CLIENTE
@@ -193,19 +230,19 @@ def verificar_ano(mensagem):
 def incluir_cliente(clientes):
     # Inclui um novo cliente (sem repetição de CPF)
     
-    cpf = input("CPF: ")
+    cpf = verificar_cpf("CPF: ")
 
     # Validação da chave: se o CPF já existe no dicionário, não cadastra de novo
     if cpf in clientes:
         print("Já existe um cliente cadastrado com esse CPF!")
         return
 
-    nome = input("Nome: ")
-    data_nascimento = input("Data de nascimento (dd/mm/aaaa): ")
-    sexo = input("Sexo (M/F): ")
-    telefone_fixo = input("Telefone fixo: ")
-    celular = input("Celular: ")
-    email = input("E-mail: ")
+    nome = verificar_texto("Nome: ")
+    data_nascimento = verificar_data("Data de nascimento (dd/mm/aaaa): ")
+    sexo = verificar_sexo("Sexo (M/F): ")
+    telefone_fixo = verificar_telefone("Telefone fixo: ")
+    celular = verificar_telefone("Celular: ")
+    email = verificar_email("E-mail: ")
 
     # Guarda no dicionário: o CPF é a chave e os demais dados vão em uma lista
     clientes[cpf] = [nome, data_nascimento, sexo, telefone_fixo, celular, email]
@@ -241,7 +278,7 @@ def lista_todos_clientes(clientes):
 
 def lista_um_cliente(clientes):
     # Busca um cliente pelo CPF e mostra seus dados
-    cpf = input('CPF do cliente: ')
+    cpf = verificar_cpf('CPF do cliente: ')
 
     # Se a chave não existe, não há o que mostrar
     if cpf not in clientes:
@@ -256,19 +293,19 @@ def alterar_cliente(clientes):
     # Altera os dados de um cliente existente.
     # O CPF é a chave e por isso NÃO pode ser alterado.
 
-    cpf = input('CPF do cliente que deseja alterar: ')
+    cpf = verificar_cpf('CPF do cliente que deseja alterar: ')
 
     if cpf not in clientes:
         print('Cliente não encontrado.')
         return
     
     # Pede apenas os dados que podem mudar (tudo, menos o CPF)
-    nome = input('Novo nome: ')
-    data_nascimento = input('Nova data de nascimento: ')
-    sexo = input('Novo sexo (M/F): ')
-    telefone_fixo = input('Novo telefone fixo: ')
-    celular = input('Novo celular: ')
-    email = input('Novo e-mail: ')
+    nome = verificar_texto('Novo nome: ')
+    data_nascimento = verificar_data('Nova data de nascimento: ')
+    sexo = verificar_sexo('Novo sexo (M/F): ')
+    telefone_fixo = verificar_telefone('Novo telefone fixo: ')
+    celular = verificar_telefone('Novo celular: ')
+    email = verificar_email('Novo e-mail: ')
 
     # Atribuir à mesma chave substitui a lista antiga pela nova
     clientes[cpf] = [nome, data_nascimento, sexo, telefone_fixo, celular, email]
@@ -287,7 +324,7 @@ def cliente_possui_teste(cpf, testes):
 def excluir_cliente(clientes, testes):
     # Exclui um cliente pelo CPF, após mostrar seus dados e pedir confirmação.
 
-    cpf = input('CPF do cliente que deseja excluir: ')
+    cpf = verificar_cpf('CPF do cliente que deseja excluir: ')
 
     # 1. Verificar existência do cliente
     if cpf not in clientes:

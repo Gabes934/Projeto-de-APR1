@@ -1,3 +1,7 @@
+
+            
+
+
 """ Gerenciamento de Testes Drive - Concessionária de Veículos """
 
 ''' 
@@ -379,11 +383,148 @@ def submenu_clientes(clientes, testes):
  VEÍCULO
     chave = código do veículo
     valor = [descricao, ano, modelo, valor]
+posição:         0       1      2      3
  ---------------------------------------------
 '''
+def incluir_veiculos(veiculos):
+    #inclui um novo veiculo
+
+    codigo = verificar_texto('Código do veículo: ')
+
+    #validação da chave: se o código já existe no dicionário, não cadastra de novo
+    if codigo in veiculos:
+        print('Já existe um veículo cadastrado com esse código!')
+        return
+    descricao = verificar_texto('Descrição: ')
+    ano = verificar_ano('Ano: ')
+    modelo = verificar_texto('Modelo: ')
+    valor = verificar_valor('Valor: ')
+
+    #guarda no dicionario o código que é a chave e os demais dados vão em uma lista
+    veiculos[codigo] = [descricao, ano, modelo, valor]
+    print('Veículo cadastrado com sucesso!')
+
+def exibir_veiculo(codigo, dados):
+
+    #mostra na tela os dados de um veículo de forma organizada
+    print('Código: ', codigo)
+    print('Descrição:', dados[0])
+    print('Ano:', dados[1])
+    print('Modelo:', dados[2])
+    print('Valor: R$ {:.2f}'.format(dados[3])) #mostra o valor com 2 casas decimas
+    print('-'*32) #linha separando entre um veiculo e outro
+
+
+def lista_todos_veiculos(veiculos):
+    #lista todos os veiculos cadastrados
+
+    if len(veiculos) == 0: #dicionario vazio
+        print('Nenhum veículo cadastrado')
+        return
+
+    #o for sobre um dicionario percorra as chaves (os codigo)
+    for codigo in veiculos:
+        exibir_veiculo(codigo, veiculos[codigo])
+
+
+def lista_um_veiculo(veiculos):
+    #busca um veiculo pelo codigo e mostra seus dados
+    codigo = verificar_texto('Código do veículo: ')
+
+    #se a chave nao existe, não há o que mostrar
+    if codigo not in veiculos:
+        print('Veículo não encontrado!')
+        return
+
+    exibir_veiculo(codigo, veiculos[codigo])
+
+
+def alterar_veiculos(veiculos):
+    # altera os dados de um veiculo que ja existe
+    # o codigo é a chave e por isso nao pode ser alterado
+
+    codigo = verificar_texto('Código do veículo que deseja alterar: ')
+
+    if codigo not in veiculos:
+        print('Veículo não encontrado!')
+        return
+
+    #pede só os dados que podem mudar(tudo menos o código)
+    descricao = verificar_texto('Nova descrição: ')
+    ano = verificar_ano('Novo ano: ')
+    modelo = verificar_texto('Novo modelo: ')
+    valor = verificar_valor('Novo valor: ')
+
+    #atribuir a mesma chave substitiu a lista antiga pela nova
+
+    veiculos[codigo] = [descricao, ano, modelo, valor]
+    print('Veículo alterado com sucesso!')
+
+
+def veiculo_possui_teste(codigo, testes):
+    '''verifica se um veiculo possui algum teste drive cadastrado, retorna true se houve
+    pelo menos um teste drive, false caso contrario
+    a chave de cada teste é a tupla (cpf, codigo_veiculo, data)'''
+
+    for cpf_teste, codigo_teste, data_teste in testes:
+        if codigo_teste == codigo:
+            return True
+    return False
+
+
+def excluir_veiculo(veiculos, testes):
+    #exclui um veiculo pelo codigo apos mostrar seus dados e pedir confirmação
+    codigo = verificar_texto('Codigo do veículo que deseja excluir: ')
+    #1 verificar a existencia do veiculo
+    if codigo not in veiculos:
+        print('Veículo não encontrado!')
+        return
+
+    #2 bloquear a exclusao de veiculo que ja foi testado
+    if veiculo_possui_teste(codigo, testes):
+        print('Não é possivel excluir pois o veículo possui teste drive cadastrado.')
+        return
+
+    #3 mostra os dados para o usuario conferir antes de apagar
+    print("\nDados do veículo a ser excluído:")
+    exibir_veiculo(codigo, veiculos[codigo])
+
+    #4 confirmaçao: upper() aceita tanto 's' quanto 'S'
+    confirmacao = input('Confirma a exclusão (S/N): ').strip().upper()
+
+    if confirmacao == 'S':
+        del veiculos[codigo] # remove a chave e os dados assoociados a ela
+        print('Veículo excluído com sucesso!')
+    else:
+        print('Exclusão cancelada.') #qualquer resposta diferente de S cancela
+
+
 
 def submenu_veiculo(veiculos, testes):
-    print('Em construção...')
+    #controla o submenu de veiculos (loop ate o usuario digitar 0)
+    opcao = ""
+    while opcao != "0":
+        exibir_submenu('VEÍCULO')
+        opcao = input('Escolha uma opção: ').strip() 
+
+
+        if opcao =='1':
+            lista_todos_veiculos(veiculos)
+        elif opcao == '2':
+            lista_um_veiculo(veiculos)
+
+        elif opcao == '3':
+            incluir_veiculos(veiculos)
+
+        elif opcao == '4':
+            alterar_veiculos(veiculos)
+
+        elif opcao =='5':
+            excluir_veiculo(veiculos, testes)
+        elif opcao == '0':
+            print('Voltando ao menu principal...')
+        else:
+            print('Opção inválida!')
 
 
 

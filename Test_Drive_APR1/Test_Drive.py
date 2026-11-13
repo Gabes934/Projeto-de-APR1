@@ -1,7 +1,4 @@
 
-            
-
-
 """ Gerenciamento de Testes Drive - Concessionária de Veículos """
 
 ''' 
